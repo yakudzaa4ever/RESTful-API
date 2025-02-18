@@ -2,44 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
 
 
 class UserController extends Controller
 {
-
     public function index()
     {
-        //
-    }
-
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-
-    public function show(User $user)
-    {
-        $user->load('posts'); 
+        $users = User::with('posts')->get();
     
         return response()->json([
             'status' => 200,
-            'data' => $user,
-            'message' => 'Foydalanuvchi malumotlari va postlari'
+            'data' => $users,
+            'message' => 'Barcha foydalanuvchilar muvaffaqiyatli olindi'
         ]);
     }
 
+    public function store(StoreUserRequest $request)
+{
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+    ]);
 
-    public function update(Request $request, string $id)
+    return response()->json([
+        'status' => 201,
+        'data' => $user,
+        'message' => 'Foydalanuvchi muvaffaqiyatli yaratildi'
+    ], 201);
+}
+public function show(User $user)
+{
+    return response()->json([
+        'status' => 200,
+        'data' => $user->load('posts'),
+        'message' => 'Foydalanuvchi topildi'
+    ]);
+}
+
+    public function update(Request $request, User $user)
     {
-        //
+        $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'password' => 'sometimes|min:6'
+        ]);
+
+        $user->update([
+            'name' => $request->name ?? $user->name,
+            'email' => $request->email ?? $user->email,
+            'password' => $request->password ? bcrypt($request->password) : $user->password,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'data' => $user,
+            'message' => 'Foydalanuvchi yangilandi'
+        ]);
     }
 
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Foydalanuvchi ochirildi'
+        ]);
     }
 }
