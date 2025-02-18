@@ -13,7 +13,7 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::with('user')->get(); // Postlarni ularning user ma’lumotlari bilan birga olish
+        $posts = Post::with('user')->get(); 
         return response()->json([
             'status' => 200,
             'data' => $posts,
