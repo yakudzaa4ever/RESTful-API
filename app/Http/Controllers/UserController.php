@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 
 class UserController extends Controller
@@ -43,26 +44,16 @@ public function show(User $user)
     ]);
 }
 
-    public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,' . $user->id,
-            'password' => 'sometimes|min:6'
-        ]);
+public function update(UpdateUserRequest $request, User $user)
+{
+    $user->update($request->validated());
 
-        $user->update([
-            'name' => $request->name ?? $user->name,
-            'email' => $request->email ?? $user->email,
-            'password' => $request->password ? bcrypt($request->password) : $user->password,
-        ]);
-
-        return response()->json([
-            'status' => 200,
-            'data' => $user,
-            'message' => 'Foydalanuvchi yangilandi'
-        ]);
-    }
+    return response()->json([
+        'status' => 200,
+        'data' => $user,
+        'message' => 'Foydalanuvchi ma’lumotlari yangilandi'
+    ]);
+}
 
     public function destroy(User $user)
     {
