@@ -11,6 +11,7 @@ class UpdatePostRequest extends FormRequest
         return true; 
     }
 
+
     public function rules(): array
     {
         return [
@@ -23,8 +24,8 @@ class UpdatePostRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.string' => 'Sarlavha matn bo‘lishi kerak.',
-            'content.string' => 'Kontent matn bo‘lishi kerak.',
+            'title.string' => 'Sarlavha matn bolishi kerak.',
+            'content.string' => 'Kontent matn bolishi kerak.',
             'user_id.required' => 'User ID talab qilinadi.',
             'user_id.exists' => 'Ushbu User ID mavjud emas.'
         ];
