@@ -44,6 +44,7 @@ public function show(User $user)
     ]);
 }
 
+
 public function update(UpdateUserRequest $request, User $user)
 {
     $user->update($request->validated());
