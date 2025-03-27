@@ -20,6 +20,7 @@ class StorePostRequest extends FormRequest
         ];
     }
 
+    
     public function messages(): array
     {
         return [
